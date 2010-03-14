@@ -33,3 +33,15 @@
 雷雨（弱）・雨: 雷怖い
 Light Rain: 雨ふってる。
 Mostly Cloudy: くもり
+
+
+# e2j
+Temperature: 気温
+Wind Speed: 風速
+Conditions: 状態
+Wind Direction: 風向き
+
+N: 北
+S: 南
+E: 東
+W: 西
