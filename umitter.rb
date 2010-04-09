@@ -17,11 +17,11 @@ class Umitter
   end
 
   def write
-    twitter_write(analyze_wheter)
+    twitter_write(analyze_whether)
   end
 
-  def analyze_wheter
-    info, link = get_wheter_info_from_rss
+  def analyze_whether
+    info, link = get_whether_info_from_rss
 
     info_str = ""
     info.each_pair do |k, v|
@@ -50,11 +50,11 @@ class Umitter
   #
   # 那覇(47930)の天気情報を RSS Feed から取得する
   #
-  # return converted_info :: Hash that keys are wheter info
+  # return converted_info :: Hash that keys are whether info
   #                            (example: Temperature, Wind Speed, etc..)
   # return link :: 
   #
-  def get_wheter_info_from_rss
+  def get_whether_info_from_rss
     xml = Nokogiri::XML(open(<<-NAHA_FEED.strip).read)
             http://rss.wunderground.com/auto/rss_full/global/stations/47930.xml
           NAHA_FEED
@@ -72,7 +72,7 @@ class Umitter
   # 天気の各情報(気温、風向等)を調べ、
   # 必要な情報を抽出、変換、出力する
   #
-  # return converted_info :: Hash that keys are wheter info
+  # return converted_info :: Hash that keys are whether info
   #                            (example: Temperature, Wind Speed, etc..)
   # 
   def convert_rss2string(info)
