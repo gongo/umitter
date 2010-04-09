@@ -1,20 +1,23 @@
 #! /usr/bin/ruby -Ku
 # -*- coding: utf-8 -*-
 
+ROOT = Dir::pwd
+
 require 'rubygems'
 require 'yaml'
 require 'open-uri'
 require 'nokogiri'
-
-$locate = Dir::pwd
+require 'rubytter'
 
 class Umitter
   def initialize
-    config = YAML.load_file("#{$locate}/config.yml")
-    @message = YAML.load_file("#{$locate}/message.yml")
+    @config = YAML.load_file("#{ROOT}/config.yml")
+    @message = YAML.load_file("#{ROOT}/message.yml")
+    @rubytter = rubytter_setup(@config)
   end
 
-  def twitter_write(msg)
+  def write
+    twitter_write(analyze_wheter)
   end
 
   def analyze_wheter
@@ -29,6 +32,20 @@ class Umitter
   end
 
   private
+
+  def rubytter_setup(config)
+    consumer = OAuth::Consumer.new(config[:consumer_key], config[:consumer_secret],
+                                   :site => "http://twitter.com/",
+                                   :proxy => config[:proxy])
+    token = OAuth::AccessToken.new(consumer,
+                                   config[:access_token_key],
+                                   config[:access_token_secret])
+    OAuthRubytter.new(token)
+  end
+
+  def twitter_write(msg)
+    @rubytter.update(msg)
+  end
 
   #
   # 那覇(47930)の天気情報を RSS Feed から取得する
@@ -69,7 +86,7 @@ class Umitter
         convert_value = "#{value.split(' / ').last.sub('&#176;', "°")}"
       when 'Wind Speed'
         speed_kmh = rm_html_tag(value.split(' / ').last).gsub(/km\/h/, "")
-        speed_ms = speed_kmh.to_i * 1000 / 3600 #=> convert km/h to m/s
+        speed_ms = speed_kmh.to_i * 1000 / 3600
         convert_value = "#{speed_ms} m/s"
       when 'Conditions'
         convert_value = @message[value]
